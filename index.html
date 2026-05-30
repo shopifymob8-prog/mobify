@@ -1449,13 +1449,13 @@
     }
   }
 
-  // ─── Google Sheets POST (no-cors) ───
+  // ─── Google Sheets GET (no-cors) — الطريقة الوحيدة المضمونة مع Apps Script ───
+  // نرسل البيانات كـ URL parameters في GET request لأن POST مع no-cors يفشل دائماً
   async function sendToGoogleSheet(data) {
-    await fetch(SHEET_URL, {
-      method:  'POST',
-      mode:    'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(data)
+    const params = new URLSearchParams(data).toString();
+    await fetch(`${SHEET_URL}?${params}`, {
+      method: 'GET',
+      mode:   'no-cors'
     });
   }
 
