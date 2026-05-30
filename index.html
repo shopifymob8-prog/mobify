@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROBIKE — دراجة هوائية جبلية احترافية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       RESET & DESIGN TOKENS
+    ============================================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      /* ─── ألوان رئيسية: أبيض + أخضر غابات ─── */
+      --bg:          #ffffff;
+      --bg-alt:      #f2f9f5;
+      --bg-card:     #ffffff;
+      --pri:         #1a6e3c;   /* أخضر داكن أساسي */
+      --pri-d:       #0f4525;
+      --pri-l:       #2eaa62;
+      --acc:         #ff5c00;   /* برتقالي للـ CTA */
+      --acc-l:       #ff8040;
+      --text:        #111827;
+      --muted:       #4b5563;
+      --muted-l:     #9ca3af;
+      --border:      rgba(26, 110, 60, 0.18);
+      --border-s:    rgba(26, 110, 60, 0.10);
+      --shadow-pri:  0 10px 36px rgba(26, 110, 60, 0.28);
+      --shadow-acc:  0 10px 36px rgba(255, 92, 0, 0.30);
+      --shadow-sm:   0 2px 14px rgba(0,0,0,0.07);
+      --shadow-md:   0 6px 28px rgba(0,0,0,0.10);
+      --r-md:  16px;
+      --r-lg:  22px;
+      --r-xl:  32px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      direction: rtl;
+      overflow-x: hidden;
+      line-height: 1.65;
+    }
+    img   { display: block; max-width: 100%; }
+    button { font-family: 'Tajawal', sans-serif; }
+    a  { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ============================================================
+       UTILITIES
+    ============================================================ */
+    .container {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      font-size: clamp(1.5rem, 4vw, 1.9rem);
+      font-weight: 900;
+      text-align: center;
+      color: var(--pri-d);
+      margin-bottom: 10px;
+    }
+    .section-title span { color: var(--acc); }
+    .title-bar {
+      width: 52px; height: 4px;
+      background: linear-gradient(90deg, var(--pri), var(--acc));
+      border-radius: 2px;
+      margin: 12px auto 36px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ============================================================
+       BUTTONS
+    ============================================================ */
+    .btn-acc {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      background: linear-gradient(135deg, var(--acc), #e04a00);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 17px 46px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: var(--shadow-acc);
+      transition: transform .22s, box-shadow .22s;
+      letter-spacing: .3px;
+    }
+    .btn-acc:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 14px 46px rgba(255,92,0,.42); }
+    .btn-acc:active { transform: scale(.97); }
+
+    .btn-pri {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      background: linear-gradient(135deg, var(--pri), var(--pri-d));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 15px 40px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: var(--shadow-pri);
+      transition: transform .22s, box-shadow .22s;
+    }
+    .btn-pri:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(26,110,60,.38); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--pri);
+      border: 2px solid var(--pri);
+      border-radius: 50px;
+      padding: 13px 34px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .22s, color .22s;
+    }
+    .btn-ghost:hover { background: var(--pri); color: #fff; }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    .navbar {
+      position: fixed;
+      inset-inline: 0;
+      top: 0;
+      z-index: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 22px;
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 var(--border-s), var(--shadow-sm);
+    }
+    .nav-logo {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--pri-d);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-logo em { font-style: normal; color: var(--acc); }
+    .nav-badge {
+      background: linear-gradient(135deg, var(--acc), #e04a00);
+      color: #fff;
+      font-size: .75rem;
+      font-weight: 800;
+      padding: 5px 16px;
+      border-radius: 20px;
+      animation: pulse 2.2s infinite;
+      letter-spacing: .3px;
+    }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      min-height: 100svh;
+      padding: 100px 20px 70px;
+      background: linear-gradient(160deg, #ffffff 55%, #ecf8f1 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* الشكل الزخرفي خلف الدراجة */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 5%;
+      right: -8%;
+      width: 55vmax;
+      height: 55vmax;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,110,60,.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -10%;
+      left: -5%;
+      width: 40vmax;
+      height: 40vmax;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,92,0,.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* صورة المنتج */
+    .hero-img-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .hero-img {
+      width: 100%;
+      border-radius: var(--r-xl);
+      box-shadow: 0 30px 70px rgba(26,110,60,.22), 0 6px 20px rgba(0,0,0,.08);
+      transition: transform .5s ease;
+    }
+    .hero-img:hover { transform: translateY(-8px) scale(1.015); }
+
+    .hero-badge-img {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--acc);
+      color: #fff;
+      font-size: .75rem;
+      font-weight: 800;
+      padding: 5px 15px;
+      border-radius: 20px;
+      box-shadow: 0 3px 12px rgba(255,92,0,.4);
+    }
+    .hero-badge-price {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      background: var(--pri-d);
+      color: #fff;
+      font-size: .9rem;
+      font-weight: 900;
+      padding: 7px 18px;
+      border-radius: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.2);
+    }
+
+    /* محتوى الهيرو */
+    .hero-body {
+      text-align: center;
+      z-index: 1;
+      max-width: 520px;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(26,110,60,.1);
+      color: var(--pri);
+      border: 1.5px solid var(--border);
+      font-size: .82rem;
+      font-weight: 800;
+      padding: 7px 18px;
+      border-radius: 30px;
+      margin-bottom: 18px;
+      letter-spacing: .2px;
+    }
+    .product-name {
+      font-size: clamp(2rem, 7vw, 3rem);
+      font-weight: 900;
+      line-height: 1.2;
+      color: var(--pri-d);
+      margin-bottom: 6px;
+    }
+    .product-name em {
+      font-style: normal;
+      color: var(--acc);
+    }
+    .product-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+    .stars-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+    .stars       { color: #f59e0b; font-size: 1.2rem; letter-spacing: 3px; }
+    .stars-count { color: var(--muted); font-size: .86rem; }
+
+    .price-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .price-now {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--pri-d);
+    }
+    .price-old {
+      font-size: 1.25rem;
+      text-decoration: line-through;
+      color: var(--muted-l);
+    }
+    .price-save {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1.5px solid #fcd34d;
+      font-size: .82rem;
+      font-weight: 800;
+      padding: 4px 13px;
+      border-radius: 20px;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* ============================================================
+       TRUST STRIP
+    ============================================================ */
+    .trust-strip {
+      background: var(--pri-d);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .trust-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 18px 8px;
+      text-align: center;
+      border-left: 1px solid rgba(255,255,255,.1);
+      color: rgba(255,255,255,.9);
+    }
+    .trust-item:last-child { border-left: none; }
+    .trust-icon  { font-size: 1.7rem; }
+    .trust-label { font-size: .75rem; font-weight: 700; line-height: 1.3; }
+
+    /* ============================================================
+       DETAILS SECTION
+    ============================================================ */
+    .details-section {
+      padding: 72px 0;
+      background: var(--bg-alt);
+      scroll-margin-top: 72px;
+    }
+
+    /* Gallery */
+    .gallery-wrap { margin-bottom: 32px; }
+    .gallery-main {
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      aspect-ratio: 4/3;
+      background: #e8f4ee;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-md);
+    }
+    .gallery-main img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .45s ease;
+    }
+    .gallery-main:hover img { transform: scale(1.04); }
+
+    .gallery-thumbs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 9px;
+    }
+    .g-thumb {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2.5px solid transparent;
+      opacity: .55;
+      transition: opacity .22s, border-color .22s;
+      background: #e8f4ee;
+    }
+    .g-thumb.active { border-color: var(--pri); opacity: 1; }
+    .g-thumb:hover  { opacity: .85; }
+    .g-thumb img    { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Features grid */
+    .features-grid {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-s);
+      border-radius: var(--r-md);
+      padding: 20px 22px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .22s, border-color .22s;
+    }
+    .feature-card:hover {
+      border-color: var(--border);
+      box-shadow: var(--shadow-md);
+    }
+    .feat-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .feat-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--pri-d);
+      margin-bottom: 5px;
+    }
+    .feat-desc {
+      font-size: .88rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* Accessories */
+    .acc-box {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 24px 22px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .acc-box h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--pri-d);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .acc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .acc-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: .9rem;
+      color: var(--muted);
+    }
+    .acc-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--pri);
+      flex-shrink: 0;
+    }
+
+    /* FAQ */
+    .faq-wrap { margin-top: 0; }
+    .faq-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--pri-d);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .faq-item {
+      border: 1.5px solid var(--border-s);
+      border-radius: var(--r-md);
+      margin-bottom: 10px;
+      overflow: hidden;
+      background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
+      transition: border-color .22s;
+    }
+    .faq-item:hover { border-color: var(--border); }
+    .faq-q {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: transparent;
+      border: none;
+      text-align: right;
+      font-family: 'Tajawal', sans-serif;
+      font-size: .92rem;
+      font-weight: 800;
+      color: var(--text);
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .faq-q:hover { background: var(--bg-alt); }
+    .faq-arrow {
+      flex-shrink: 0;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--bg-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      color: var(--pri);
+      font-weight: 900;
+      transition: transform .3s, background .2s;
+    }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); background: var(--pri); color: #fff; }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease, padding .3s;
+    }
+    .faq-item.open .faq-a { max-height: 300px; }
+    .faq-a-inner {
+      padding: 0 20px 18px;
+      font-size: .88rem;
+      color: var(--muted);
+      line-height: 1.8;
+      border-top: 1px solid var(--border-s);
+      padding-top: 14px;
+    }
+
+    /* Details CTA */
+    .details-cta {
+      text-align: center;
+      margin-top: 44px;
+      padding-top: 36px;
+      border-top: 1.5px dashed var(--border);
+    }
+
+    /* ============================================================
+       TESTIMONIALS
+    ============================================================ */
+    .testimonials-section {
+      padding: 70px 0;
+      background: var(--bg);
+    }
+    .t-grid {
+      display: grid;
+      gap: 16px;
+    }
+    @media (min-width: 600px) { .t-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 860px) { .t-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .t-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-s);
+      border-radius: var(--r-lg);
+      padding: 24px 22px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .22s, border-color .22s;
+    }
+    .t-card:hover { box-shadow: var(--shadow-md); border-color: var(--border); }
+    .t-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .t-avatar {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pri-l), var(--pri-d));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .t-name  { font-size: .92rem; font-weight: 800; color: var(--text); }
+    .t-loc   { font-size: .78rem; color: var(--muted-l); margin-top: 2px; }
+    .t-stars { color: #f59e0b; font-size: .9rem; margin-top: 4px; }
+    .t-text  { font-size: .88rem; color: var(--muted); line-height: 1.75; }
+
+    /* ============================================================
+       ORDER MODAL
+    ============================================================ */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(5px);
+      z-index: 800;
+      justify-content: center;
+      align-items: flex-end;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      position: relative;
+      background: var(--bg-card);
+      border-top: 3.5px solid var(--pri);
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      padding: 26px 24px 44px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 93svh;
+      overflow-y: auto;
+      animation: slideUp .38s cubic-bezier(.34,1.56,.64,1);
+      box-shadow: 0 -8px 40px rgba(0,0,0,.15);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: #e5e7eb;
+      border-radius: 2px;
+      margin: 0 auto 22px;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      border: none;
+      color: var(--text);
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+    .modal-close:hover { background: #e5e7eb; }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 900;
+      text-align: center;
+      color: var(--pri-d);
+      margin-bottom: 4px;
+    }
+    .modal-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: .86rem;
+      margin-bottom: 24px;
+    }
+
+    /* Product summary in modal */
+    .modal-product {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border-s);
+      border-radius: var(--r-md);
+      padding: 14px 16px;
+      margin-bottom: 22px;
+    }
+    .modal-product img {
+      width: 56px; height: 56px;
+      object-fit: cover;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .modal-product-name { font-size: .9rem; font-weight: 800; color: var(--text); }
+    .modal-product-price { font-size: 1.1rem; font-weight: 900; color: var(--pri-d); margin-top: 3px; }
+
+    /* Form */
+    .field { margin-bottom: 15px; }
+    .field label {
+      display: block;
+      font-size: .84rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+    .field input {
+      width: 100%;
+      padding: 13px 16px;
+      background: #f9fafb;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      color: var(--text);
+      font-family: 'Tajawal', sans-serif;
+      font-size: .98rem;
+      direction: rtl;
+      outline: none;
+      transition: border-color .22s, background .22s, box-shadow .22s;
+    }
+    .field input:focus {
+      border-color: var(--pri);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(26,110,60,.12);
+    }
+    .field input::placeholder { color: #c4c4c4; }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--acc), #e04a00);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 900;
+      font-family: 'Tajawal', sans-serif;
+      cursor: pointer;
+      box-shadow: var(--shadow-acc);
+      transition: transform .22s, box-shadow .22s;
+      margin-top: 8px;
+    }
+    .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(255,92,0,.42); }
+    .btn-submit:disabled { opacity: .65; cursor: not-allowed; }
+
+    .err-msg {
+      color: #dc2626;
+      text-align: center;
+      font-size: .85rem;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* Success */
+    .success-pane {
+      display: none;
+      text-align: center;
+      padding: 20px 0 10px;
+    }
+    .success-pane.open { display: block; }
+    .success-icon {
+      font-size: 4rem;
+      margin-bottom: 14px;
+      animation: bounceIn .55s ease;
+    }
+    @keyframes bounceIn {
+      0%  { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.22); }
+      100%{ transform: scale(1); opacity: 1; }
+    }
+    .success-pane h3 { font-size: 1.4rem; font-weight: 900; color: var(--pri); margin-bottom: 10px; }
+    .success-pane p  { color: var(--muted); line-height: 1.8; font-size: .92rem; }
+    .btn-done {
+      margin-top: 24px;
+      background: var(--pri);
+      color: #fff;
+      border: none;
+      padding: 13px 42px;
+      border-radius: 30px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-done:hover { background: var(--pri-d); }
+
+    /* ============================================================
+       SPINNER
+    ============================================================ */
+    .spinner {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ============================================================
+       WHATSAPP FLOAT
+    ============================================================ */
+    .wa-float {
+      position: fixed;
+      bottom: 26px;
+      left: 20px;
+      z-index: 700;
+      width: 60px; height: 60px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 26px rgba(37,211,102,.5);
+      transition: transform .22s, box-shadow .22s;
+      animation: waPop 2.5s ease-in-out infinite;
+    }
+    @keyframes waPop {
+      0%,100%{ transform: scale(1);    box-shadow: 0 6px 26px rgba(37,211,102,.5); }
+      50%    { transform: scale(1.09); box-shadow: 0 10px 36px rgba(37,211,102,.65); }
+    }
+    .wa-float:hover { transform: scale(1.14); box-shadow: 0 12px 40px rgba(37,211,102,.7); animation: none; }
+    .wa-float svg { width: 32px; height: 32px; fill: #fff; }
+
+    .wa-float::before {
+      content: 'تواصل معنا';
+      position: absolute;
+      right: calc(100% + 11px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      color: #111;
+      font-family: 'Tajawal', sans-serif;
+      font-size: .76rem;
+      font-weight: 700;
+      padding: 5px 13px;
+      border-radius: 20px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s;
+      box-shadow: 0 3px 14px rgba(0,0,0,.14);
+    }
+    .wa-float:hover::before { opacity: 1; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      background: var(--pri-d);
+      color: rgba(255,255,255,.75);
+      text-align: center;
+      padding: 30px 20px;
+      font-size: .82rem;
+    }
+    .footer strong { color: #fff; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (min-width: 860px) {
+      .hero {
+        flex-direction: row;
+        align-items: center;
+        padding: 110px 60px 90px;
+        gap: 60px;
+      }
+      .hero-body { text-align: right; max-width: none; flex: 1; }
+      .hero-body .stars-row,
+      .hero-body .price-row  { justify-content: flex-start; }
+      .hero-body .hero-cta   { align-items: flex-start; flex-direction: row; }
+      .hero-img-wrap { order: 2; max-width: 400px; }
+
+      .modal { border-radius: var(--r-xl); margin: auto; }
+      .overlay { align-items: center; }
+
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════ -->
+<nav class="navbar">
+  <div class="nav-logo">
+    <span>🚲</span>
+    <span>PRO<em>BIKE</em></span>
+  </div>
+  <div class="nav-badge">🔥 عرض خاص</div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="hero">
+
+  <!-- صورة الهيرو الرئيسية — الدراجة الخضراء -->
+  <div class="hero-img-wrap">
+    <img
+      class="hero-img"
+      id="heroImg"
+      src="produit 1/Gemini_Generated_Image_epx96qepx96qepx9.png"
+      alt="دراجة هوائية جبلية PROBIKE"
+    />
+    <div class="hero-badge-img">⚡ الأكثر طلباً</div>
+    <div class="hero-badge-price">1 330 درهم</div>
+  </div>
+
+  <div class="hero-body">
+    <div class="hero-eyebrow">🏅 دراجة جبلية احترافية — PROBIKE</div>
+    <h1 class="product-name">دراجة هوائية<br/><em>جبلية VTT</em></h1>
+    <p class="product-sub">
+      هيكل ألومنيوم · فرانات ديسك · امورتيسور أمامي<br/>
+      مناسبة للجبل والمدينة معاً 🇲🇦
+    </p>
+
+    <div class="stars-row">
+      <span class="stars">★★★★★</span>
+      <span class="stars-count">(+280 تقييم موثوق)</span>
+    </div>
+
+    <div class="price-row">
+      <span class="price-now">1 330 درهم</span>
+      <span class="price-old">1 850 درهم</span>
+      <span class="price-save">وفّر 28%</span>
+    </div>
+
+    <div class="hero-cta">
+      <button class="btn-acc" onclick="openModal()">🛒 اطلب الآن</button>
+      <button class="btn-ghost" onclick="scrollToDetails()">📋 التفاصيل الكاملة ↓</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     TRUST STRIP
+══════════════════════════════════════════ -->
+<div class="trust-strip">
+  <div class="trust-item">
+    <div class="trust-icon">🚚</div>
+    <div class="trust-label">توصيل لجميع المدن</div>
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon">🛡️</div>
+    <div class="trust-label">ضمان الجودة</div>
+  </div>
+  <div class="trust-item">
+    <div class="trust-icon">🔄</div>
+    <div class="trust-label">إرجاع مجاني 7 أيام</div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     DETAILS SECTION
+══════════════════════════════════════════ -->
+<section id="details" class="details-section reveal">
+  <div class="container">
+
+    <h2 class="section-title">تفاصيل <span>المنتج</span></h2>
+    <div class="title-bar"></div>
+
+    <!-- ألبوم الصور — 5 صور حقيقية من مجلد produit 1 -->
+    <div class="gallery-wrap">
+      <div class="gallery-main">
+        <img
+          id="mainGalleryImg"
+          src="produit 1/Gemini_Generated_Image_epx96qepx96qepx9.png"
+          alt="دراجة PROBIKE — عرض شامل"
+        />
+      </div>
+      <div class="gallery-thumbs">
+        <div class="g-thumb active"
+          onclick="pickThumb(this,'produit 1/Gemini_Generated_Image_epx96qepx96qepx9.png')">
+          <img src="produit 1/Gemini_Generated_Image_epx96qepx96qepx9.png" alt="لون أخضر" />
+        </div>
+        <div class="g-thumb"
+          onclick="pickThumb(this,'produit 1/Gemini_Generated_Image_9yyq769yyq769yyq.png')">
+          <img src="produit 1/Gemini_Generated_Image_9yyq769yyq769yyq.png" alt="لون أزرق" />
+        </div>
+        <div class="g-thumb"
+          onclick="pickThumb(this,'produit 1/Gemini_Generated_Image_9u6l4n9u6l4n9u6l.png')">
+          <img src="produit 1/Gemini_Generated_Image_9u6l4n9u6l4n9u6l.png" alt="لون أسود" />
+        </div>
+        <div class="g-thumb"
+          onclick="pickThumb(this,'produit 1/Gemini_Generated_Image_2v1m1e2v1m1e2v1m.png')">
+          <img src="produit 1/Gemini_Generated_Image_2v1m1e2v1m1e2v1m.png" alt="لون رمادي" />
+        </div>
+        <div class="g-thumb"
+          onclick="pickThumb(this,'produit 1/Gemini_Generated_Image_2c7td12c7td12c7t.png')">
+          <img src="produit 1/Gemini_Generated_Image_2c7td12c7td12c7t.png" alt="تفصيل فرانات الديسك" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ الخصائص الرئيسية ═══ -->
+    <h2 class="section-title">الخصائص <span>والمميزات</span></h2>
+    <div class="title-bar"></div>
+
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feat-icon">🏗️</div>
+        <div>
+          <div class="feat-title">الهيكل — Cadre Aluminium</div>
+          <div class="feat-desc">
+            مصنوع من الألومنيوم الخفيف والمتين، يسهّل التحكم في الدراجة ويضمن عمراً طويلاً ومقاومةً قوية للصدمات. لا يصدأ ولا يكمد.
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">⚙️</div>
+        <div>
+          <div class="feat-title">نظام السرعات — Vitesses</div>
+          <div class="feat-desc">
+            نظام سرعات متكامل (Plateaux أمام + Cassette خلف) يعطيك خيارات بزاف — طالع في عقبة قاصحة أو مسرح في طريق هابطة بكل سهولة.
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">🛑</div>
+        <div>
+          <div class="feat-title">فرانات الديسك — Freins à Disque</div>
+          <div class="feat-desc">
+            مكابح قرصية أمامية وخلفية قوية — توقف سريع وآمن حتى في الأجواء الماطرة والطرق المنحدرة. لا تتأثر بالماء ولا بالطين.
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">🌿</div>
+        <div>
+          <div class="feat-title">الامورتيسور — Fourche Suspendue</div>
+          <div class="feat-desc">
+            شوكة أمامية ممتصة للصدمات تقلل الاهتزازات في الطرق الوعرة والحفر — تحمي اليدين والظهر وتجعل السوكة مريحة بزاف.
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">🚵</div>
+        <div>
+          <div class="feat-title">الإطارات — Pneus Tout-Terrain</div>
+          <div class="feat-desc">
+            إطارات عريضة من علامة PROBIKE مخصصة للطرق الجبلية، تمنح ثباتاً ممتازاً وتماسكاً قوياً مع الأرض في جميع الظروف.
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">🏙️</div>
+        <div>
+          <div class="feat-title">جبل + مدينة</div>
+          <div class="feat-desc">
+            كاتصلح ليهم بجوج! دراجة VTT تصبر للطرق الوعرة والحفر، وفي نفس الوقت خفيفة ومريحة في طرق المدينة بفضل نظام السرعات.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══ الإكسسوارات المدمجة ═══ -->
+    <div class="acc-box">
+      <h3>📦 الإكسسوارات المدمجة — كاتجي واجدة بـ</h3>
+      <div class="acc-list">
+        <div class="acc-item"><div class="acc-dot"></div>واقيات من الطين أمامية وخلفية (Garde-boues) — لحمايتك من الرشاش والمياه</div>
+        <div class="acc-item"><div class="acc-dot"></div>حامل قنينة الماء (Porte-bidon) مدمج في الهيكل</div>
+        <div class="acc-item"><div class="acc-dot"></div>مسند جانبي متين (Béquille) لركن الدراجة بسهولة</div>
+      </div>
+    </div>
+
+    <!-- ═══ FAQ بالدارجة ═══ -->
+    <div class="faq-wrap">
+      <div class="faq-title">❓ الأسئلة الأكثر شيوعاً</div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>واش هاد البيكالة كاتصلح غير للجبل أولا حتى للمدينة؟</span>
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            كاتصلح ليهم بجوج! هي أصلاً دراجة جبلية (VTT) يعني كاصبر للحفر والطرق الوعرة، وفي نفس الوقت مريحة وخفيفة بزاف في طريق المدينة بفضل نظام السرعات ديالها.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>شنو هو نوع الفران (المكابح) لي فيها؟</span>
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            الدراجة مجهزة بـ فرانات ديسك (Freins à disque) قدام ووراء. هاد النوع كايعطي فريناج قوي وآمن بزاف مقارنة بالفرانات العاديين، ومكايتأثرش بالماء ولا الطين.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>واش البيكالة قاصحة في الصدمات والحفر؟</span>
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            لا، بالعكس. الدراجة فيها امورتيسور قدام (Suspension avant) كيمتص كاع الصدمات ديال الحفر والحجارة، الشي لي كيخلي السوكة ديالها مريحة وما تكمدش ليك يديك ولا ظهرك.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>واش الكادر (الهيكل) ديالها ثقيل؟</span>
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            الهيكل مخدوم من الألومنيوم — معروف بأنه خفيف في الهزان وساهل في الصوقان، وفي نفس الوقت صحيح وما كاتصداش.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>واش كيجيو معاها لكسيسوارات لي باينين في الصورة؟</span>
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            نعم، الدراجة كاتجي واجدة بـ الكاردبو (Garde-boue) قدام ووراء، حامل قنينة الماء، والسيبور (Béquille) باش توقفها.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>شحال من فيتاس (سرعة) فيها؟</span>
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            فيها نظام سرعات متكامل (Plateaux في القدام و Cassette في اللور) كيعطيك خيارات بزاف باش تبدل السرعة على حساب الطريق — سواء طالع في عقبة قاصحة أو مسرح في طريق هابطة.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA داخل التفاصيل -->
+    <div class="details-cta">
+      <div class="price-row" style="margin-bottom:22px">
+        <span class="price-now">1 330 درهم</span>
+        <span class="price-old">1 850 درهم</span>
+        <span class="price-save">وفّر 28%</span>
+      </div>
+      <button class="btn-acc" onclick="openModal()">🛒 اطلب الآن — التوصيل مجاني</button>
+    </div>
+
+  </div><!-- /container -->
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     TESTIMONIALS
+══════════════════════════════════════════ -->
+<section class="testimonials-section reveal">
+  <div class="container">
+    <h2 class="section-title">آراء <span>عملائنا</span></h2>
+    <div class="title-bar"></div>
+
+    <div class="t-grid">
+
+      <div class="t-card">
+        <div class="t-head">
+          <div class="t-avatar">ي</div>
+          <div>
+            <div class="t-name">يوسف المنصوري</div>
+            <div class="t-loc">الدار البيضاء</div>
+            <div class="t-stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="t-text">واجو بصحتو! الدراجة وصلاتني في يومين، التغليف ممتاز والجودة تفوق التوقعات. الفرانات ديسك قوية بزاف وامورتيسور كيخدم مزيان.</p>
+      </div>
+
+      <div class="t-card">
+        <div class="t-head">
+          <div class="t-avatar">ف</div>
+          <div>
+            <div class="t-name">فاطمة الزهراء</div>
+            <div class="t-loc">مراكش</div>
+            <div class="t-stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="t-text">اشتريتها لولدي وهو فرحان بزاف! خفيفة، جميلة، وكاتدوز في كل الطرق. السعر معقول ومقارنة للجودة هي راخصة.</p>
+      </div>
+
+      <div class="t-card">
+        <div class="t-head">
+          <div class="t-avatar">ع</div>
+          <div>
+            <div class="t-name">عبد السلام الأمين</div>
+            <div class="t-loc">فاس</div>
+            <div class="t-stars">★★★★★</div>
+          </div>
+        </div>
+        <p class="t-text">كنت خايف نشري من الانترنت ولكن الله يبارك، الدراجة وصلات مزيانة وكاملة. خدمة الزبون جاوبوني مريحة. غادي نعاود نشري!</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     ORDER MODAL
+══════════════════════════════════════════ -->
+<div class="overlay" id="overlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()" aria-label="إغلاق">✕</button>
+
+    <!-- النموذج -->
+    <div id="formPane">
+      <h2 class="modal-title">🛒 أكمل طلبك الآن</h2>
+      <p class="modal-sub">أدخل بياناتك وسيتواصل معك فريقنا لتأكيد الطلب</p>
+
+      <!-- ملخص المنتج -->
+      <div class="modal-product">
+        <img src="produit 1/Gemini_Generated_Image_epx96qepx96qepx9.png" alt="PROBIKE" />
+        <div>
+          <div class="modal-product-name">دراجة هوائية جبلية PROBIKE</div>
+          <div class="modal-product-price">1 330 درهم</div>
+        </div>
+      </div>
+
+      <form id="orderForm" onsubmit="submitOrder(event)" novalidate>
+
+        <div class="field">
+          <label for="fName">👤 الاسم الكامل <span style="color:#dc2626">*</span></label>
+          <input type="text" id="fName" placeholder="مثال: محمد أمين" autocomplete="name" required />
+        </div>
+
+        <div class="field">
+          <label for="fPhone">📱 رقم الهاتف <span style="color:#dc2626">*</span></label>
+          <input type="tel"  id="fPhone" placeholder="06XXXXXXXX أو 07XXXXXXXX" autocomplete="tel" required />
+        </div>
+
+        <div class="field">
+          <label for="fCity">🏙️ المدينة <span style="color:#dc2626">*</span></label>
+          <input type="text" id="fCity" placeholder="مثال: الرباط، الدار البيضاء..." required />
+        </div>
+
+        <div class="field">
+          <label for="fAddress">📍 العنوان التفصيلي <span style="color:#dc2626">*</span></label>
+          <input type="text" id="fAddress" placeholder="الحي، الشارع، رقم المنزل..." required />
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">✅ تأكيد الطلب</button>
+        <p class="err-msg" id="errMsg"></p>
+      </form>
+    </div>
+
+    <!-- حالة النجاح -->
+    <div class="success-pane" id="successPane">
+      <div class="success-icon">🎉</div>
+      <h3>تم استلام طلبك!</h3>
+      <p>
+        شكراً على ثقتك بنا.<br />
+        سيتواصل معك فريقنا خلال <strong>24 ساعة</strong><br />
+        لتأكيد الطلب والترتيب للتوصيل.
+      </p>
+      <button class="btn-done" onclick="closeModal()">ممتاز، شكراً! 👍</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     WHATSAPP FLOAT
+══════════════════════════════════════════ -->
+<!-- رقم الواتساب: 21279869133 -->
+<a
+  href="https://wa.me/21279869133?text=السلام%20عليكم%2C%20بغيت%20نعرف%20أكثر%20على%20الدراجة%20PROBIKE"
+  target="_blank"
+  rel="noopener"
+  class="wa-float"
+  aria-label="تواصل معنا على واتساب"
+>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════ -->
+<footer class="footer">
+  <p>© 2025 <strong>PROBIKE المغرب</strong> — جميع الحقوق محفوظة</p>
+  <p style="margin-top:6px;opacity:.6">🚲 متجر دراجات هوائية احترافية</p>
+</footer>
+
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+  // ================================================================
+  // ⚙️  إعدادات Supabase — عدّل هنا فقط إن تغيّرت المفاتيح
+  // ================================================================
+  const SUPABASE_URL = 'https://jwnithsotubveaflkcgd.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_CYCS6efRtxfJNXNWZiwD0Q_T4_htCvk'; // مفتاح Anon Public
+  const TABLE_NAME   = 'orders';   // اسم الجدول — أعمدة: name, phone, city, address, product
+
+  // ================================================================
+  // ⚙️  رابط Google Sheets Apps Script (احتياطي)
+  // ================================================================
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyUXe4ACft1IJbQY_Q59X56jBVKXgH0ef0NjgjkVS38kz5zVLQxIXLFUSpCvTPYuC7ybg/exec';
+
+  // ================================================================
+  // ⚙️  اسم المنتج — يُضاف تلقائياً في عمود product بكل طلب
+  // ================================================================
+  const PRODUCT_NAME = 'دراجة هوائية جبلية PROBIKE';
+
+  // ────────────────────────────────
+  // Modal
+  // ────────────────────────────────
+  function openModal() {
+    document.getElementById('overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('formPane').style.display    = 'block';
+    document.getElementById('successPane').classList.remove('open');
+    document.getElementById('errMsg').style.display      = 'none';
+    const btn = document.getElementById('submitBtn');
+    btn.disabled   = false;
+    btn.innerHTML  = '✅ تأكيد الطلب';
+  }
+
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('open');
+    document.body.style.overflow = '';
+    document.getElementById('orderForm').reset();
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('overlay')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // ────────────────────────────────
+  // Scroll to details
+  // ────────────────────────────────
+  function scrollToDetails() {
+    document.getElementById('details').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ────────────────────────────────
+  // Gallery
+  // ────────────────────────────────
+  function pickThumb(el, src) {
+    document.getElementById('mainGalleryImg').src = src;
+    document.querySelectorAll('.g-thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  // ────────────────────────────────
+  // FAQ accordion
+  // ────────────────────────────────
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    // أغلق الباقيين
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // ────────────────────────────────
+  // Form submit
+  // ────────────────────────────────
+  async function submitOrder(e) {
+    e.preventDefault();
+
+    const name    = document.getElementById('fName').value.trim();
+    const phone   = document.getElementById('fPhone').value.trim();
+    const city    = document.getElementById('fCity').value.trim();
+    const address = document.getElementById('fAddress').value.trim();
+    const product = PRODUCT_NAME;
+
+    const btn    = document.getElementById('submitBtn');
+    const errMsg = document.getElementById('errMsg');
+
+    // ─── تحقق من الحقول ───
+    if (!name || !phone || !city || !address) {
+      return showErr('⚠️ يرجى ملء جميع الحقول المطلوبة.');
+    }
+    if (!/^\+?[\d\s\-]{8,15}$/.test(phone)) {
+      return showErr('⚠️ يرجى إدخال رقم هاتف صحيح.');
+    }
+
+    // ─── Loading ───
+    btn.disabled  = true;
+    btn.innerHTML = '<span class="spinner"></span> جاري الإرسال...';
+    errMsg.style.display = 'none';
+
+    // ─── الـ Payload — مطابق لأعمدة الجدول: name, phone, city, address, product ───
+    const payload = { name, phone, city, address, product };
+
+    try {
+      await sendToSupabase(payload);                   // أساسي
+      sendToGoogleSheet(payload).catch(console.warn);  // احتياطي — لا يوقف الطلب إن فشل
+
+      // ─── نجاح ───
+      document.getElementById('formPane').style.display = 'none';
+      document.getElementById('successPane').classList.add('open');
+
+    } catch (err) {
+      console.error(err);
+      showErr('حدث خطأ في الاتصال. يرجى المحاولة مجدداً أو التواصل عبر واتساب.');
+      btn.disabled  = false;
+      btn.innerHTML = '✅ تأكيد الطلب';
+    }
+  }
+
+  // ─── Supabase REST POST ───
+  async function sendToSupabase(data) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer':        'return=minimal'
+      },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`Supabase ${res.status}: ${txt}`);
+    }
+  }
+
+  // ─── Google Sheets POST (no-cors) ───
+  async function sendToGoogleSheet(data) {
+    await fetch(SHEET_URL, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(data)
+    });
+  }
+
+  function showErr(msg) {
+    const el = document.getElementById('errMsg');
+    el.textContent   = msg;
+    el.style.display = 'block';
+  }
+
+  // ────────────────────────────────
+  // Scroll Reveal
+  // ────────────────────────────────
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+</script>
+
+</body>
+</html>
